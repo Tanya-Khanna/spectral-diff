@@ -15,9 +15,13 @@ export default function LobbyPage() {
   const { isConnected, owner, repo, getToken } = useGitHubAuth();
   const [isLoadingPR, setIsLoadingPR] = useState(false);
 
-  const totalRisk = files.length > 0 ? Math.round(files.reduce((sum, f) => sum + f.risk, 0) / files.length) : 0;
-  const totalLOC = files.reduce((sum, f) => sum + f.locChanged, 0);
-  const failingChecks = files.filter(f => !f.checksPassing).length;
+  // Safe array access
+  const filesSafe = Array.isArray(files) ? files : [];
+  const fileCount = filesSafe.length;
+  
+  const totalRisk = fileCount > 0 ? Math.round(filesSafe.reduce((sum, f) => sum + f.risk, 0) / fileCount) : 0;
+  const totalLOC = filesSafe.reduce((sum, f) => sum + f.locChanged, 0);
+  const failingChecks = filesSafe.filter(f => !f.checksPassing).length;
 
   const [prLoadError, setPrLoadError] = useState<string | null>(null);
 
@@ -38,13 +42,16 @@ export default function LobbyPage() {
       let checkRuns: Array<{ id: number; name: string; status: string; conclusion: string | null }> = [];
       try {
         const checksData = await fetchCheckRuns(token, owner, repo, meta.headSha);
-        checkRuns = checksData.check_runs || [];
+        checkRuns = Array.isArray(checksData?.check_runs) ? checksData.check_runs : [];
       } catch {
         // Checks might not be available
       }
       
+      // Ensure files is always an array
+      const safeGhFiles = Array.isArray(ghFiles) ? ghFiles : [];
+      
       // Map to our model
-      const mappedFiles = mapGitHubFilesToRooms(ghFiles, checkRuns);
+      const mappedFiles = mapGitHubFilesToRooms(safeGhFiles, checkRuns);
       
       // Load into store
       loadRealPR(
@@ -189,7 +196,7 @@ export default function LobbyPage() {
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-4 py-4 border-t border-b border-gray-800">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-gray-100">{files.length}</p>
+                    <p className="text-2xl font-bold text-gray-100">{fileCount}</p>
                     <p className="text-xs text-gray-500">Haunted Rooms</p>
                   </div>
                   <div className="text-center">
@@ -205,10 +212,10 @@ export default function LobbyPage() {
                 </div>
 
                 {/* File preview */}
-                {files.length > 0 && (
+                {fileCount > 0 && (
                   <div className="mt-4 space-y-2">
                     <p className="text-xs text-gray-500 uppercase tracking-wider">Most Haunted</p>
-                    {[...files]
+                    {[...filesSafe]
                       .sort((a, b) => b.risk - a.risk)
                       .slice(0, 3)
                       .map(file => (
@@ -235,7 +242,7 @@ export default function LobbyPage() {
             )}
 
             {/* CTA */}
-            {files.length > 0 && (
+            {fileCount > 0 && (
               <button
                 onClick={() => router.push("/house")}
                 className="

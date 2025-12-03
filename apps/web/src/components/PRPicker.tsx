@@ -23,9 +23,12 @@ export function PRPicker({ token, owner, repo, onSelectPR, onSwitchRepo }: PRPic
     setError(null);
     try {
       const data = await fetchPRs(token, owner, repo, state);
-      setPRs(data);
+      // Always ensure we set an array, never undefined
+      setPRs(Array.isArray(data) ? data : []);
     } catch (err: any) {
       setError(err.message);
+      // Don't overwrite with undefined on error - keep empty array
+      setPRs([]);
     } finally {
       setIsLoading(false);
     }
@@ -65,8 +68,12 @@ export function PRPicker({ token, owner, repo, onSelectPR, onSwitchRepo }: PRPic
     );
   }
 
+  // Safe array access
+  const prsSafe = Array.isArray(prs) ? prs : [];
+  const prCount = prsSafe.length;
+
   // Empty state with helpful actions
-  if (prs.length === 0) {
+  if (prCount === 0) {
     return (
       <div className="bg-gray-900/80 backdrop-blur-md rounded-xl border border-gray-800 p-4">
         <div className="text-center py-4">
@@ -125,7 +132,7 @@ export function PRPicker({ token, owner, repo, onSelectPR, onSwitchRepo }: PRPic
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <h3 className="text-sm font-semibold text-gray-200">
-            📋 Pull Requests ({prs.length})
+            📋 Pull Requests ({prCount})
           </h3>
           {/* State filter badge */}
           <span className={`text-xs px-2 py-0.5 rounded-full ${
@@ -157,7 +164,7 @@ export function PRPicker({ token, owner, repo, onSelectPR, onSwitchRepo }: PRPic
       </div>
 
       <div className="space-y-2 max-h-64 overflow-y-auto">
-        {prs.map((pr) => (
+        {prsSafe.map((pr) => (
           <button
             key={pr.number}
             onClick={() => onSelectPR(pr)}

@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "UI Screenshot Refresh",
+  "description": "Placeholder for screenshot refresh",
+  "version": "1",
+  "when": {
+    "type": "userTriggered"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "echo \"Screenshots would be updated via Playwright\""
+  }
+}

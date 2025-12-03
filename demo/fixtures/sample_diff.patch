@@ -1,0 +1,13 @@
+diff --git a/src/auth.ts b/src/auth.ts
+index abc1234..def5678 100644
+--- a/src/auth.ts
++++ b/src/auth.ts
+@@ -10,6 +10,9 @@ export function validateToken(token: string): boolean {
+   if (!token) {
+     throw new Error('Token required');
+   }
++  if (!process.env.JWT_SECRET) {
++    throw new Error('JWT_SECRET not configured');
++  }
+   return jwt.verify(token, process.env.JWT_SECRET);
+ }

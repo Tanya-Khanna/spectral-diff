@@ -1,0 +1,163 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0a0a0f;
+  --foreground: #e5e5e5;
+  --purple-glow: rgba(139, 92, 246, 0.5);
+  --amber-glow: rgba(251, 191, 36, 0.5);
+  --red-glow: rgba(220, 38, 38, 0.5);
+  --emerald-glow: rgba(52, 211, 153, 0.5);
+}
+
+/* stylelint-disable-next-line at-rule-no-unknown */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Custom lantern cursor */
+.lantern-cursor {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='rgba(251,191,36,0.15)'/%3E%3Ccircle cx='16' cy='16' r='6' fill='rgba(251,191,36,0.3)'/%3E%3Ccircle cx='16' cy='16' r='2' fill='rgba(251,191,36,0.8)'/%3E%3C/svg%3E") 16 16, auto;
+}
+
+/* Cursed room distortion effect */
+.cursed-distortion {
+  filter: url('#cursed-filter');
+  animation: cursed-shake 0.15s ease-in-out infinite;
+}
+
+@keyframes cursed-shake {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1px, 0); }
+  75% { transform: translate(1px, 0); }
+}
+
+/* Glowing scratch effect */
+.scratch-glow-emerald {
+  box-shadow: 0 0 8px var(--emerald-glow), 0 0 16px var(--emerald-glow);
+}
+
+.scratch-glow-amber {
+  box-shadow: 0 0 6px var(--amber-glow), 0 0 12px var(--amber-glow);
+}
+
+.scratch-glow-red {
+  box-shadow: 0 0 10px var(--red-glow), 0 0 20px var(--red-glow);
+}
+
+/* Custom animations */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fog-drift {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  25% { transform: translateX(10px) translateY(-5px); }
+  50% { transform: translateX(-5px) translateY(5px); }
+  75% { transform: translateX(-10px) translateY(-3px); }
+}
+
+@keyframes scratch-shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px var(--purple-glow); }
+  50% { box-shadow: 0 0 40px var(--purple-glow); }
+}
+
+@keyframes lantern-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.3s ease-out;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+.animate-fog-drift {
+  animation: fog-drift 20s ease-in-out infinite;
+}
+
+.animate-scratch-shimmer {
+  animation: scratch-shimmer 2s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-lantern-flicker {
+  animation: lantern-flicker 4s ease-in-out infinite;
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-slide-in-right,
+  .animate-fog-drift,
+  .animate-scratch-shimmer,
+  .animate-pulse-glow,
+  .animate-lantern-flicker {
+    animation: none;
+  }
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.8);
+  outline-offset: 2px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(30, 30, 40, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 100, 120, 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 140, 0.6);
+}

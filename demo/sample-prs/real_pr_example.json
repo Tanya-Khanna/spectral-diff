@@ -1,0 +1,39 @@
+{
+  "number": 123,
+  "title": "Fix security vulnerability in auth middleware",
+  "state": "open",
+  "user": {
+    "login": "security-bot",
+    "avatar_url": "https://avatars.githubusercontent.com/u/12345?v=4"
+  },
+  "head": {
+    "sha": "abc123def456",
+    "ref": "fix/auth-vulnerability"
+  },
+  "base": {
+    "ref": "main"
+  },
+  "files": [
+    {
+      "filename": "src/middleware/auth.ts",
+      "status": "modified",
+      "additions": 5,
+      "deletions": 2,
+      "patch": "@@ -15,7 +15,10 @@ export function validateToken(token: string) {\n   if (!token) {\n     throw new Error('Token required');\n   }\n-  return jwt.verify(token, process.env.JWT_SECRET);\n+  if (!process.env.JWT_SECRET) {\n+    throw new Error('JWT_SECRET not configured');\n+  }\n+  return jwt.verify(token, process.env.JWT_SECRET);"
+    }
+  ],
+  "check_runs": [
+    {
+      "id": 789,
+      "name": "Security Scan",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 790,
+      "name": "Unit Tests",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "spectral-diff",
+  "private": true,
+  "packageManager": "pnpm@10.24.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter @spectral/web dev",
+    "dev:api": "pnpm --filter @spectral/api dev",
+    "lint": "pnpm --filter @spectral/web lint",
+    "typecheck": "pnpm --filter @spectral/web exec tsc --noEmit && pnpm --filter @spectral/api exec tsc --noEmit",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build"
+  }
+}

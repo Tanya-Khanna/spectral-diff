@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "risk-score-tests",
+  "description": "Run build when risk scoring logic changes",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "apps/web/src/lib/risk/**"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "pnpm -C apps/web build"
+  }
+}

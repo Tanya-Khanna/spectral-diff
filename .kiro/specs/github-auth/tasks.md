@@ -1,0 +1,102 @@
+# Implementation Plan
+
+- [x] 1. Set up API GitHub authentication endpoints
+  - [x] 1.1 Create GitHub auth middleware and routes
+    - Create `services/api/src/github/auth.ts` with token extraction middleware
+    - Implement `requireGitHubToken` middleware that extracts x-gh-token header
+    - Return 401 if token missing
+    - _Requirements: 4.1, 4.3_
+  - [ ]* 1.2 Write property test for missing token returns 401
+    - **Property 5: Missing Token Returns 401**
+    - **Validates: Requirements 4.3**
+  - [x] 1.3 Implement GET /gh/me endpoint
+    - Create route handler that calls GitHub /user API
+    - Return username, avatarUrl, and rate limit info
+    - Forward GitHub errors with status and message
+    - _Requirements: 4.2, 4.4_
+  - [ ]* 1.4 Write property test for GitHub error forwarding
+    - **Property 6: GitHub Errors Forwarded**
+    - **Validates: Requirements 4.4**
+  - [x] 1.5 Implement GET /gh/rate_limit endpoint
+    - Create route handler that calls GitHub /rate_limit API
+    - Return remaining, limit, and reset time
+    - _Requirements: 5.1, 5.3_
+  - [x] 1.6 Register routes in API index
+    - Import and mount GitHub routes at /gh prefix
+    - _Requirements: 4.1_
+
+- [x] 2. Checkpoint - API builds successfully
+
+- [x] 3. Create useGitHubAuth hook for client-side auth management
+  - [x] 3.1 Implement useGitHubAuth hook
+    - Create `apps/web/src/lib/github.ts`
+    - Implement localStorage read/write for gh_token, gh_owner, gh_repo
+    - Implement connect function that validates token via API then stores
+    - Implement disconnect function that clears all credentials
+    - Implement testToken function for validation without storage
+    - Track loading and error states
+    - _Requirements: 1.3, 2.1, 2.2, 2.3, 3.1, 3.2, 3.3_
+  - [ ]* 3.2 Write property test for credential storage round-trip
+    - **Property 1: Credential Storage Round-Trip**
+    - **Validates: Requirements 2.1, 2.2, 2.3**
+  - [ ]* 3.3 Write property test for disconnect clears all credentials
+    - **Property 2: Disconnect Clears All Credentials**
+    - **Validates: Requirements 3.1, 3.2, 3.3**
+  - [ ]* 3.4 Write property test for invalid token never stored
+    - **Property 3: Invalid Token Never Stored**
+    - **Validates: Requirements 1.5**
+
+- [x] 4. Create GitHubConnectBox component
+  - [x] 4.1 Implement GitHubConnectBox component
+    - Create `apps/web/src/components/GitHubConnectBox.tsx`
+    - Add PAT input field with type="password"
+    - Add owner and repo text input fields
+    - Add "Test token" button that triggers validation
+    - Display username and success indicator on valid connection
+    - Display error message on validation failure
+    - Pre-fill owner/repo from localStorage on mount
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.4_
+  - [ ]* 4.2 Write property test for token never displayed
+    - **Property 4: Token Never Displayed**
+    - **Validates: Requirements 2.5**
+  - [x] 4.3 Implement disconnect functionality
+    - Add "Disconnect" button visible when connected
+    - Call disconnect from useGitHubAuth hook
+    - Reset UI to initial state after disconnect
+    - _Requirements: 3.1, 3.2, 3.3, 3.4_
+  - [x] 4.4 Implement rate limit display
+    - Show remaining/limit when connected
+    - Display warning indicator when remaining < 100
+    - Show reset time formatted as relative time
+    - _Requirements: 5.1, 5.2, 5.3_
+  - [ ]* 4.5 Write property test for rate limit warning threshold
+    - **Property 7: Rate Limit Warning Threshold**
+    - **Validates: Requirements 5.2**
+
+- [x] 5. Integrate GitHubConnectBox into Lobby page
+  - [x] 5.1 Add GitHubConnectBox to Lobby
+    - Import and render GitHubConnectBox in `apps/web/src/app/page.tsx`
+    - Position below PR card or as separate section
+    - Style to match existing spooky aesthetic
+    - _Requirements: 1.1_
+  - [x] 5.2 Connect auth state to SpectralProvider
+    - Update store to include GitHub connection state
+    - Make PR data source switchable between demo and real GitHub
+    - _Requirements: 2.4, 2.5_
+
+- [x] 6. Additional GitHub API endpoints implemented
+  - [x] 6.1 GET /gh/pulls - List open PRs
+  - [x] 6.2 GET /gh/pulls/:number/files - Get PR files with diffs
+  - [x] 6.3 GET /gh/pulls/:number/meta - Get PR metadata (head SHA, refs)
+  - [x] 6.4 GET /gh/pulls/:number/checks - Get check runs for PR
+  - [x] 6.5 POST /gh/pulls/:number/review - Submit PR review (approve/request changes)
+  - [x] 6.6 POST /gh/pulls/:number/comment - Post general comment
+  - [x] 6.7 POST /gh/pulls/:number/apply-patch - Apply patch via Git Data API
+
+- [x] 7. PR Picker and Real Mode Integration
+  - [x] 7.1 Create PRPicker component
+  - [x] 7.2 Create github-mapper.ts for mapping GitHub files to rooms
+  - [x] 7.3 Update SpectralProvider with loadRealPR and resetToDemo
+  - [x] 7.4 Update ExorcisePanel with real GitHub review actions
+
+- [x] 8. Final Checkpoint - Both API and Web build successfully

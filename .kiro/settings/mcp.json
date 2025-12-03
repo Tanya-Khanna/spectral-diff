@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "github-mcp": {
+      "command": "node",
+      "args": ["mcp/github-mcp/dist/index.js"],
+      "env": {
+        "GITHUB_TOKEN": "${env:GITHUB_TOKEN}"
+      },
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}

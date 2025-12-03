@@ -113,6 +113,12 @@ export default function LobbyPage() {
                 owner={owner}
                 repo={repo}
                 onSelectPR={handleSelectPR}
+                onSwitchRepo={() => {
+                  // Clear current selection and scroll to connect box
+                  resetToDemo();
+                  // Focus the owner input (handled by GitHubConnectBox)
+                  document.getElementById("gh-owner-input")?.focus();
+                }}
               />
             )}
             

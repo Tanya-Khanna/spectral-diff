@@ -151,6 +151,7 @@ export function GitHubConnectBox({ onConnected }: GitHubConnectBoxProps) {
           <div>
             <label className="block text-xs text-gray-500 mb-1">Owner</label>
             <input
+              id="gh-owner-input"
               type="text"
               value={owner}
               onChange={(e) => setOwner(e.target.value)}

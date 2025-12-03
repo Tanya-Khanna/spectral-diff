@@ -235,9 +235,20 @@ export function useGitHubAuth() {
 }
 
 
+// PR state filter type
+export type PRState = "open" | "closed" | "all";
+
 // GitHub API functions
-export async function fetchPRs(token: string, owner: string, repo: string): Promise<GitHubPR[]> {
-  const result = await apiFetch<GitHubPR[]>(`/gh/pulls?owner=${owner}&repo=${repo}`, token);
+export async function fetchPRs(
+  token: string, 
+  owner: string, 
+  repo: string, 
+  state: PRState = "open"
+): Promise<GitHubPR[]> {
+  const result = await apiFetch<GitHubPR[]>(
+    `/gh/pulls?owner=${owner}&repo=${repo}&state=${state}`, 
+    token
+  );
   // Ensure we always return an array
   return Array.isArray(result) ? result : [];
 }

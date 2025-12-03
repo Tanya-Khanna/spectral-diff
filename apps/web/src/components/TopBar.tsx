@@ -17,10 +17,10 @@ export function TopBar() {
   } = useSpectral();
 
   const navItems = [
-    { href: "/", label: "Lobby", icon: "🏚️" },
-    { href: "/house", label: "House", icon: "🏰" },
-    { href: "/lantern", label: "Lantern", icon: "🔦" },
-    { href: "/exorcise", label: "Exorcise", icon: "⚗️" },
+    { href: "/", label: "Lobby", icon: "🏚️", tooltip: "Connect GitHub + choose a PR." },
+    { href: "/house", label: "House", icon: "🏰", tooltip: "Files become rooms. Explore what changed." },
+    { href: "/lantern", label: "Lantern", icon: "🔦", tooltip: "Guided review: one hunk at a time." },
+    { href: "/exorcise", label: "Exorcise", icon: "⚗️", tooltip: "Comment, approve, or request changes." },
   ];
 
   return (
@@ -36,11 +36,18 @@ export function TopBar() {
             <span className="font-semibold tracking-tight hidden sm:inline">Spectral Diff</span>
           </Link>
           
-          <div className="hidden md:flex items-center gap-2 text-sm text-gray-400">
-            <span className="text-gray-600">|</span>
-            <span className="text-gray-500">{repoName}</span>
-            <span className="text-purple-500">#{prNumber}</span>
-          </div>
+          {prNumber > 0 ? (
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-400">
+              <span className="text-gray-600">|</span>
+              <span className="text-gray-500">{repoName}</span>
+              <span className="text-purple-500">#{prNumber}</span>
+            </div>
+          ) : (
+            <div className="hidden md:flex items-center gap-2 text-sm text-gray-500">
+              <span className="text-gray-600">|</span>
+              <span>No PR loaded</span>
+            </div>
+          )}
         </div>
 
         {/* Navigation */}
@@ -49,6 +56,7 @@ export function TopBar() {
             <Link
               key={item.href}
               href={item.href}
+              title={item.tooltip}
               className={`
                 px-3 py-1.5 rounded-lg text-sm font-medium transition-all
                 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-950
@@ -103,7 +111,7 @@ export function TopBar() {
       {/* PR Title Bar */}
       <div className="bg-gray-900/50 border-t border-gray-800/30 px-4 py-2">
         <p className="max-w-7xl mx-auto text-sm text-gray-300 truncate">
-          {prTitle}
+          {prTitle || "Connect to GitHub and select a PR to begin"}
         </p>
       </div>
     </header>

@@ -161,3 +161,50 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(120, 120, 140, 0.6);
 }
+
+
+/* Spooky FX styles */
+@media (prefers-reduced-motion: reduce) {
+  .spooky-noise, .spooky-fog, .spooky-fog2 { animation: none !important; }
+}
+
+.spooky-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: overlay;
+  opacity: 0.35;
+}
+
+.spooky-fog {
+  background: radial-gradient(closest-side, rgba(155,88,255,0.10), transparent 70%),
+              radial-gradient(closest-side, rgba(0,255,209,0.06), transparent 70%),
+              radial-gradient(closest-side, rgba(255,255,255,0.05), transparent 70%);
+  filter: blur(18px);
+  animation: spookyFog 18s ease-in-out infinite;
+  opacity: 0.55;
+}
+
+.spooky-fog2 {
+  background: radial-gradient(closest-side, rgba(155,88,255,0.08), transparent 70%),
+              radial-gradient(closest-side, rgba(0,255,209,0.05), transparent 70%);
+  filter: blur(26px);
+  animation: spookyFog2 26s ease-in-out infinite;
+  opacity: 0.45;
+}
+
+@keyframes spookyFog {
+  0% { transform: translate3d(-2%, -1%, 0) scale(1.02); }
+  50% { transform: translate3d(3%, 2%, 0) scale(1.06); }
+  100% { transform: translate3d(-2%, -1%, 0) scale(1.02); }
+}
+
+@keyframes spookyFog2 {
+  0% { transform: translate3d(2%, 1%, 0) scale(1.04); }
+  50% { transform: translate3d(-3%, -2%, 0) scale(1.08); }
+  100% { transform: translate3d(2%, 1%, 0) scale(1.04); }
+}
+
+@keyframes spookyFlash {
+  from { opacity: 0.9; }
+  to { opacity: 0; }
+}

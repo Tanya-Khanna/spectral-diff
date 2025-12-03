@@ -89,15 +89,22 @@ async function apiFetch<T>(
     },
   });
 
-  const json = await res.json().catch(() => ({ ok: false, error: { message: "Request failed" } }));
+  // Handle non-JSON responses gracefully
+  const text = await res.text();
+  let json: any;
+  try {
+    json = JSON.parse(text);
+  } catch {
+    throw new Error(`API returned non-JSON (${res.status}): ${text.slice(0, 120)}`);
+  }
   
-  if (!res.ok || !json.ok) {
-    const message = json.error?.message || json.error || `API error: ${res.status}`;
+  if (!res.ok || json?.ok === false) {
+    const message = json?.error?.message || json?.error || `API error: ${res.status}`;
     throw new Error(message);
   }
   
-  // Unwrap data from envelope
-  return json.data as T;
+  // Support both {ok:true, data:...} and legacy {ok:true, ...rest}
+  return (json && "data" in json ? json.data : json) as T;
 }
 
 // Result type for operations that can fail
@@ -230,8 +237,9 @@ export function useGitHubAuth() {
 
 // GitHub API functions
 export async function fetchPRs(token: string, owner: string, repo: string): Promise<GitHubPR[]> {
-  const res = await apiFetch<{ ok: boolean; data: GitHubPR[] }>(`/gh/pulls?owner=${owner}&repo=${repo}`, token);
-  return res.data;
+  const result = await apiFetch<GitHubPR[]>(`/gh/pulls?owner=${owner}&repo=${repo}`, token);
+  // Ensure we always return an array
+  return Array.isArray(result) ? result : [];
 }
 
 export async function fetchPRMeta(
@@ -258,8 +266,9 @@ export async function fetchPRFiles(
   repo: string,
   prNumber: number
 ): Promise<GitHubFile[]> {
-  const res = await apiFetch<{ ok: boolean; data: GitHubFile[] }>(`/gh/pulls/${prNumber}/files?owner=${owner}&repo=${repo}`, token);
-  return res.data;
+  const result = await apiFetch<GitHubFile[]>(`/gh/pulls/${prNumber}/files?owner=${owner}&repo=${repo}`, token);
+  // Ensure we always return an array
+  return Array.isArray(result) ? result : [];
 }
 
 export async function fetchCheckRuns(
@@ -268,7 +277,15 @@ export async function fetchCheckRuns(
   repo: string,
   ref: string
 ): Promise<{ total_count: number; check_runs: CheckRun[] }> {
-  return apiFetch(`/gh/pulls/0/checks?owner=${owner}&repo=${repo}&ref=${ref}`, token);
+  const result = await apiFetch<{ total_count: number; check_runs: CheckRun[] }>(
+    `/gh/pulls/0/checks?owner=${owner}&repo=${repo}&ref=${ref}`, 
+    token
+  );
+  // Ensure safe defaults
+  return {
+    total_count: result?.total_count ?? 0,
+    check_runs: Array.isArray(result?.check_runs) ? result.check_runs : [],
+  };
 }
 
 export async function postReview(
